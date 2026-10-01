@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interview Review & AI Delivery Coach</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #151d2e;
+      --bg-panel: #1e293b;
+      --bg-input: #0f172a;
+      --border: #26334d;
+      --border-focus: #6366f1;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+
+      --score-high: #10b981;
+      --score-high-bg: rgba(16, 185, 129, 0.12);
+      --score-high-border: rgba(16, 185, 129, 0.3);
+
+      --score-mid: #f59e0b;
+      --score-mid-bg: rgba(245, 158, 11, 0.12);
+      --score-mid-border: rgba(245, 158, 11, 0.3);
+
+      --score-low: #ef4444;
+      --score-low-bg: rgba(239, 68, 68, 0.12);
+      --score-low-border: rgba(239, 68, 68, 0.3);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 24px;
+    }
+
+    .header-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 99px;
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0 0 6px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.lead {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin: 0 0 18px;
+    }
+
+    /* Tabs */
+    .tab-group {
+      display: flex;
+      background: var(--bg-input);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Drag & Drop */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 32px 20px;
+      text-align: center;
+      background: var(--bg-input);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .drop-zone-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      color: var(--primary);
+      opacity: 0.9;
+    }
+
+    .drop-zone text {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .file-types {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .file-badge {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .file-info-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-top: 12px;
+    }
+
+    .file-info-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 260px;
+    }
+
+    .file-info-size {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .file-remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+
+    .file-remove-btn:hover {
+      color: var(--score-low);
+    }
+
+    /* Recorder */
+    .record-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+
+    .media-options {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .media-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .preview-box {
+      width: 100%;
+      max-height: 220px;
+      background: #000;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: none;
+    }
+
+    .preview-box video,
+    .preview-box audio {
+      width: 100%;
+      max-height: 220px;
+      display: block;
+    }
+
+    .timer-display {
+      font-family: 'Outfit', monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rec-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--score-low);
+      border-radius: 50%;
+      opacity: 0.3;
+    }
+
+    .rec-dot.active {
+      animation: pulse-red 1s infinite alternate;
+    }
+
+    @keyframes pulse-red {
+      from {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 8px var(--score-low);
+      }
+
+      to {
+        opacity: 0.3;
+        transform: scale(0.85);
+      }
+    }
+
+    .recorder-btns {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .btn-secondary {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-rec-start {
+      background: var(--score-low);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-rec-start:hover {
+      background: #dc2626;
+    }
+
+    .btn-rec-stop {
+      background: var(--score-mid);
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Forms */
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin: 14px 0 6px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-main);
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: vertical;
+      min-height: 120px;
+      transition: border-color 0.2s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .btn-primary {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Progress & Error */
+    .status-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(165, 180, 252, 0.3);
+      border-top-color: #a5b4fc;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: var(--score-low-bg);
+      border: 1px solid var(--score-low-border);
+      color: #fca5a5;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    /* Report Output */
+    .output-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .report-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .btn-download {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-download:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--text-muted);
+    }
+
+    /* Hero Score Card */
+    .hero-score-card {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 28px;
+      align-items: center;
+      background: linear-gradient(135deg, #151d2e 0%, #1e293b 100%);
+    }
+
+    @media (max-width: 640px) {
+      .hero-score-card {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-svg {
+      width: 150px;
+      height: 150px;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.06);
+      stroke-width: 12;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 408;
+      stroke-dashoffset: 408;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+    }
+
+    .gauge-content {
+      position: absolute;
+      text-align: center;
+    }
+
+    .gauge-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .gauge-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .hero-headline h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 0 0 10px;
+      line-height: 1.3;
+    }
+
+    .hero-headline p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* Delivery Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+
+    .metric-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .metric-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+      margin-top: 2px;
+    }
+
+    .filler-pills {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .filler-pill {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    ul.bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    ul.bullet-list li::before {
+      content: "•";
+      position: absolute;
+      left: 6px;
+      top: -2px;
+      font-size: 1.2rem;
+    }
+
+    ul.bullet-list.strengths li::before {
+      color: var(--score-high);
+      content: "✓";
+      font-size: 0.9rem;
+      top: 2px;
+      left: 4px;
+      font-weight: 700;
+    }
+
+    ul.bullet-list.fixes li::before {
+      color: var(--score-mid);
+      content: "⚡";
+      font-size: 0.85rem;
+      top: 1px;
+      left: 4px;
+    }
+
+    ul.bullet-list.practice li::before {
+      color: var(--primary);
+      content: "🎯";
+      font-size: 0.85rem;
+      top: 1px;
+      left: 4px;
+    }
+
+    /* Answer Cards */
+    .answers-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .answer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 6px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s ease;
+    }
+
+    .answer-card.score-high {
+      border-left-color: var(--score-high);
+    }
+
+    .answer-card.score-mid {
+      border-left-color: var(--score-mid);
+    }
+
+    .answer-card.score-low {
+      border-left-color: var(--score-low);
+    }
+
+    .answer-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .question-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0 0 6px;
+      line-height: 1.35;
+    }
+
+    .answer-type-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: capitalize;
+    }
+
+    .score-badge {
+      white-space: nowrap;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 6px 14px;
+      border-radius: 99px;
+    }
+
+    .score-badge.high {
+      background: var(--score-high-bg);
+      color: var(--score-high);
+      border: 1px solid var(--score-high-border);
+    }
+
+    .score-badge.mid {
+      background: var(--score-mid-bg);
+      color: var(--score-mid);
+      border: 1px solid var(--score-mid-border);
+    }
+
+    .score-badge.low {
+      background: var(--score-low-bg);
+      color: var(--score-low);
+      border: 1px solid var(--score-low-border);
+    }
+
+    .candidate-answer-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-style: italic;
+      position: relative;
+    }
+
+    /* STAR Chips */
+    .star-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .star-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+
+    .star-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-subtle);
+    }
+
+    .star-chip.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    /* Accordion Improved Answer */
+    details.improved-answer-details {
+      margin-top: 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    summary.improved-answer-summary {
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    summary.improved-answer-summary:hover {
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .improved-answer-content {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.6;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      color: var(--text-subtle);
+      opacity: 0.5;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      header,
+      .input-section,
+      .btn-download,
+      .privacy-badge {
+        display: none !important;
+      }
+
+      main {
+        display: block;
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .card,
+      .answer-card,
+      .metric-card {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .hero-score-card {
+        background: #f8fafc !important;
+      }
+
+      .gauge-bg {
+        stroke: #e2e8f0 !important;
+      }
+
+      .gauge-value,
+      h1,
+      h2,
+      .question-title,
+      .metric-value {
+        color: #000 !important;
+        -webkit-text-fill-color: initial !important;
+      }
+
+      .candidate-answer-box,
+      .improved-answer-content {
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+        border-color: #cbd5e1 !important;
+      }
+
+      details.improved-answer-details {
+        display: block;
+      }
+
+      summary.improved-answer-summary {
+        color: #4338ca !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-container">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" x2="12" y1="19" y2="22"></line>
+            </family>
+          </svg>
+        </div>
+        Interview Analyzer
+      </a>
+      <div class="privacy-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Recordings deleted instantly
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="card">
+        <h1>Analyze Practice</h1>
+        <p class="lead">Upload a file, record live, or paste text to get instant STAR score breakdown & coaching
+          rewrites.</p>
+
+        <!-- Input Tabs -->
+        <div class="tab-group" role="tablist">
+          <button class="tab-btn active" id="tab-upload-btn" onclick="switchTab('upload')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" x2="12" y1="3" y2="15"></line>
+            </svg>
+            File
+          </button>
+          <button class="tab-btn" id="tab-record-btn" onclick="switchTab('record')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+            </svg>
+            Record
+          </button>
+          <button class="tab-btn" id="tab-text-btn" onclick="switchTab('text')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" x2="8" y1="13" y2="13"></line>
+              <line x1="16" x2="8" y1="17" y2="17"></line>
+            </svg>
+            Text
+          </button>
+        </div>
+
+        <!-- Tab 1: File Upload -->
+        <div class="tab-pane active" id="pane-upload">
+          <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <svg class="drop-zone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+              <path d="M12 12v9"></path>
+              <path d="m16 16-4-4-4 4"></path>
+            </svg>
+            <div>Drag & drop audio or video file here</div>
+            <text>or click to browse your computer</text>
+            <div class="file-types">
+              <span class="file-badge">MP3</span>
+              <span class="file-badge">WAV</span>
+              <span class="file-badge">M4A</span>
+              <span class="file-badge">MP4</span>
+              <span class="file-badge">WEBM</span>
+            </div>
+            <input type="file" id="fileInput" accept="audio/*,video/mp4,video/webm,.m4a,.mov,.ogg,.flac"
+              style="display:none" onchange="handleFileSelected(this.files[0])">
+          </div>
+
+          <div id="fileSelectedPill" style="display:none;" class="file-info-pill">
+            <div>
+              <div id="fileInfoName" class="file-info-name">filename.mp3</div>
+              <div id="fileInfoSize" class="file-info-size">3.4 MB</div>
+            </div>
+            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()" title="Remove file">✕</button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Record Live -->
+        <div class="tab-pane" id="pane-record">
+          <div class="record-container">
+            <div class="media-options">
+              <label><input type="radio" name="mediaType" value="audio" checked onchange="toggleVideoOption(false)"> 🎙️
+                Audio Only</label>
+              <label><input type="radio" name="mediaType" value="video" onchange="toggleVideoOption(true)"> 📹 Camera +
+                Audio</label>
+            </div>
+
+            <div class="preview-box" id="previewBox">
+              <video id="liveVideo" autoplay muted playsinline></video>
+              <audio id="recordedAudio" controls style="display:none;"></audio>
+              <video id="recordedVideo" controls style="display:none;"></video>
+            </div>
+
+            <div class="timer-display">
+              <div class="rec-dot" id="recDot"></div>
+              <span id="recTimer">00:00</span>
+            </div>
+
+            <div class="recorder-btns">
+              <button type="button" id="btnStartRec" class="btn-rec-start" onclick="startRecording()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="10"></circle>
+                </svg>
+                Start Recording
+              </button>
+              <button type="button" id="btnStopRec" class="btn-rec-stop" style="display:none;"
+                onclick="stopRecording()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                </svg>
+                Stop Recording
+              </button>
+              <button type="button" id="btnResetRec" class="btn-secondary" style="display:none;"
+                onclick="resetRecording()">
+                🔄 Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Paste Text -->
+        <div class="tab-pane" id="pane-text">
+          <label for="transcriptText">Interview Transcript</label>
+          <textarea id="transcriptText"
+            placeholder="Interviewer: Tell me about a time you led a challenging project under deadline...&#10;Candidate: In my previous role at..."></textarea>
+        </div>
+
+        <!-- Job Description (Optional) -->
+        <label for="jobDesc">Job Description (Optional)</label>
+        <textarea id="jobDesc" style="min-height:80px;"
+          placeholder="Paste role requirements for key qualifications check..."></textarea>
+
+        <!-- Submit Button -->
+        <button type="button" id="btnSubmit" class="btn-primary" onclick="submitAnalysis()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m22 2-7 20-4-9-9-4Z"></path>
+            <path d="M22 2 11 13"></path>
+          </svg>
+          Analyze Interview
+        </button>
+
+        <!-- Status Progress -->
+        <div id="statusBox" class="status-box" style="display:none;">
+          <div class="spinner"></div>
+          <span id="statusMessage">Transcribing audio...</span>
+        </div>
+
+        <!-- Error Box -->
+        <div id="errorBox" class="error-box" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- Report Output Section -->
+    <section class="output-section" id="outputSection">
+      <div class="empty-state" id="emptyState">
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+          <line x1="3" x2="21" y1="9" y2="9"></line>
+          <line x1="9" x2="9" y1="21" y2="9"></line>
+        </svg>
+        <div style="font-size:1.1rem; font-weight:600; color:var(--text-main); margin-bottom:4px;">No Analysis Report
+          Yet</div>
+        <div>Upload a recording, record live, or paste a transcript to view detailed feedback.</div>
+      </div>
+
+      <!-- Rendered Report Container -->
+      <div id="reportContent" style="display:none; flex-direction:column; gap:24px;">
+        <!-- Header bar with download button -->
+        <div class="report-header">
+          <h2 class="report-title">Interview Analysis Report</h2>
+          <button class="btn-download" onclick="window.print()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" x2="12" y1="15" y2="3"></line>
+            </svg>
+            Download Report (PDF)
+          </button>
+        </div>
+
+        <!-- Hero Score Card -->
+        <div class="card hero-score-card">
+          <div class="gauge-wrapper">
+            <svg class="gauge-svg" viewBox="0 0 150 150">
+              <circle class="gauge-bg" cx="75" cy="75" r="65"></circle>
+              <circle class="gauge-fill" id="gaugeCircle" cx="75" cy="75" r="65"></circle>
+            </svg>
+            <div class="gauge-content">
+              <div class="gauge-value" id="gaugeVal">–</div>
+              <div class="gauge-label">Overall Score</div>
+            </div>
+          </div>
+
+          <div class="hero-headline">
+            <h2 id="summaryHeadline">Summary Headline</h2>
+            <p id="summarySubhead">Detailed delivery and content coaching breakdown below.</p>
+          </div>
+        </div>
+
+        <!-- Delivery Metrics Cards -->
+        <div class="metrics-grid" id="metricsGrid"></div>
+
+        <!-- Executive Summary (Strengths & Fixes) -->
+        <div class="summary-grid">
+          <div class="card">
+            <h3 class="section-title" style="color:var(--score-high);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              What Worked Well
+            </h3>
+            <ul class="bullet-list strengths" id="listStrengths"></ul>
+          </div>
+          <div class="card">
+            <h3 class="section-title" style="color:var(--score-mid);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" x2="12" y1="8" y2="12"></line>
+                <line x1="12" x2="12.01" y1="16" y2="16"></line>
+              </svg>
+              Fix First
+            </h3>
+            <ul class="bullet-list fixes" id="listFixes"></ul>
+          </div>
+        </div>
+
+        <!-- Practice Plan -->
+        <div class="card">
+          <h3 class="section-title" style="color:var(--primary);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            This Week's Practice Plan
+          </h3>
+          <ul class="bullet-list practice" id="listPractice"></ul>
+        </div>
+
+        <!-- Answer-by-Answer Heading -->
+        <div>
+          <h2 style="font-family:'Outfit',sans-serif; font-size:1.3rem; margin:12px 0 4px;">Answer by Answer Analysis
+          </h2>
+          <div style="color:var(--text-muted); font-size:0.9rem;">Individual response breakdown, STAR structure check,
+            and AI rewrites.</div>
+        </div>
+
+        <!-- Answer Cards Container -->
+        <div class="answers-container" id="answersContainer"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // State variables
+    let activeTab = 'upload';
+    let selectedFile = null;
+    let recordedBlob = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let mediaStream = null;
+    let recTimerInterval = null;
+    let recSeconds = 0;
+    let isVideoMode = false;
+    let progressInterval = null;
+
+    // Helpers
+    const $ = id => document.getElementById(id);
+    const safeArr = val => Array.isArray(val) ? val.filter(i => typeof i === 'string' && i.trim() !== '') : [];
+
+    // Tab switching
+    function switchTab(tab) {
+      activeTab = tab;
+      ['upload', 'record', 'text'].forEach(t => {
+        $(`tab-${t}-btn`).classList.toggle('active', t === tab);
+        $(`pane-${t}`).classList.toggle('active', t === tab);
+      });
+    }
+
+    // Drag & Drop Setup
+    const dropZone = $('dropZone');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+    });
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+    });
+    dropZone.addEventListener('drop', e => {
+      const dt = e.dataTransfer;
+      if (dt.files && dt.files[0]) {
+        handleFileSelected(dt.files[0]);
+      }
+    });
+
+    function handleFileSelected(file) {
+      if (!file) return;
+      selectedFile = file;
+      $('fileInfoName').textContent = file.name;
+      $('fileInfoSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      $('fileSelectedPill').style.display = 'flex';
+    }
+
+    function clearSelectedFile() {
+      selectedFile = null;
+      $('fileInput').value = '';
+      $('fileSelectedPill').style.display = 'none';
+    }
+
+    // Recorder implementation
+    function toggleVideoOption(enableVideo) {
+      isVideoMode = enableVideo;
+    }
+
+    async function startRecording() {
+      $('errorBox').style.display = 'none';
+      if (!navigator.mediaDevices || !window.MediaRecorder) {
+        showError("Your browser does not support live audio/video recording. Please upload a file or paste a transcript instead.");
+        return;
+      }
+
+      try {
+        const constraints = {
+          audio: true,
+          video: isVideoMode ? { width: { ideal: 640 }, height: { ideal: 480 } } : false
+        };
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        recordedChunks = [];
+
+        // Preview video if video mode
+        if (isVideoMode) {
+          $('liveVideo').srcObject = mediaStream;
+          $('liveVideo').style.display = 'block';
+          $('recordedVideo').style.display = 'none';
+          $('recordedAudio').style.display = 'none';
+          $('previewBox').style.display = 'block';
+        }
+
+        let mimeType = '';
+        if (isVideoMode) {
+          if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) mimeType = 'video/webm;codecs=vp9';
+          else if (MediaRecorder.isTypeSupported('video/webm')) mimeType = 'video/webm';
+          else if (MediaRecorder.isTypeSupported('video/mp4')) mimeType = 'video/mp4';
+        } else {
+          if (MediaRecorder.isTypeSupported('audio/webm')) mimeType = 'audio/webm';
+          else if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+          else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
+        }
+
+        mediaRecorder = new MediaRecorder(mediaStream, mimeType ? { mimeType } : undefined);
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          recordedBlob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || (isVideoMode ? 'video/webm' : 'audio/webm') });
+          const blobUrl = URL.createObjectURL(recordedBlob);
+
+          $('liveVideo').style.display = 'none';
+          if (isVideoMode) {
+            $('recordedVideo').src = blobUrl;
+            $('recordedVideo').style.display = 'block';
+          } else {
+            $('recordedAudio').src = blobUrl;
+            $('recordedAudio').style.display = 'block';
+          }
+          $('previewBox').style.display = 'block';
+
+          if (mediaStream) {
+            mediaStream.getTracks().forEach(t => t.stop());
+          }
+        };
+
+        mediaRecorder.start(1000);
+        recSeconds = 0;
+        updateRecTimer();
+        recTimerInterval = setInterval(() => {
+          recSeconds++;
+          updateRecTimer();
+        }, 1000);
+
+        $('recDot').classList.add('active');
+        $('btnStartRec').style.display = 'none';
+        $('btnStopRec').style.display = 'flex';
+        $('btnResetRec').style.display = 'none';
+      } catch (err) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          showError("Microphone/Camera permission was denied. Please allow device permissions in your browser settings to record.");
+        } else if (err.name === 'NotFoundError') {
+          showError("No microphone or camera device found on your system.");
+        } else {
+          showError(`Could not access recording device: ${err.message}`);
+        }
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      clearInterval(recTimerInterval);
+      $('recDot').classList.remove('active');
+      $('btnStopRec').style.display = 'none';
+      $('btnResetRec').style.display = 'flex';
+    }
+
+    function resetRecording() {
+      recordedBlob = null;
+      recordedChunks = [];
+      clearInterval(recTimerInterval);
+      recSeconds = 0;
+      updateRecTimer();
+      $('previewBox').style.display = 'none';
+      $('liveVideo').srcObject = null;
+      $('recordedAudio').src = '';
+      $('recordedVideo').src = '';
+      $('btnStartRec').style.display = 'flex';
+      $('btnResetRec').style.display = 'none';
+      $('btnStopRec').style.display = 'none';
+    }
+
+    function updateRecTimer() {
+      const mins = String(Math.floor(recSeconds / 60)).padStart(2, '0');
+      const secs = String(recSeconds % 60).padStart(2, '0');
+      $('recTimer').textContent = `${mins}:${secs}`;
+    }
+
+    function showError(msg) {
+      $('errorBox').textContent = msg;
+      $('errorBox').style.display = 'block';
+    }
+
+    function setBtnLoading(loading) {
+      $('btnSubmit').disabled = loading;
+      if (loading) {
+        $('statusBox').style.display = 'flex';
+      } else {
+        $('statusBox').style.display = 'none';
+        if (progressInterval) clearInterval(progressInterval);
+      }
+    }
+
+    // Analysis Form Submission
+    async function submitAnalysis() {
+      $('errorBox').style.display = 'none';
+
+      const fd = new FormData();
+      let hasAudio = false;
+
+      if (activeTab === 'upload') {
+        if (selectedFile) {
+          fd.append('audio', selectedFile);
+          hasAudio = true;
+        }
+      } else if (activeTab === 'record') {
+        if (recordedBlob) {
+          const ext = recordedBlob.type.includes('mp4') ? 'mp4' : 'webm';
+          fd.append('audio', recordedBlob, `interview_recording.${ext}`);
+          hasAudio = true;
+        }
+      }
+
+      const transcriptVal = $('transcriptText').value.trim();
+      const jobDescVal = $('jobDesc').value.trim();
+
+      fd.append('transcript', transcriptVal);
+      fd.append('job_description', jobDescVal);
+
+      if (!hasAudio && transcriptVal.split(/\s+/).length < 25) {
+        showError("Please provide an audio file, live recording, or a transcript with at least 25-30 words.");
+        return;
+      }
+
+      setBtnLoading(true);
+
+      // Animated progress text updates
+      const steps = hasAudio
+        ? ['Transcribing audio & measuring delivery pace...', 'Analyzing answers & evaluating STAR structure...', 'Synthesizing overall coaching summary & practice plan...']
+        : ['Parsing transcript & splitting Q&A pairs...', 'Evaluating answers & scoring STAR structure...', 'Synthesizing practice plan...'];
+
+      let stepIdx = 0;
+      $('statusMessage').textContent = steps[0];
+      progressInterval = setInterval(() => {
+        stepIdx = (stepIdx + 1) % steps.length;
+        $('statusMessage').textContent = steps[stepIdx];
+      }, 4500);
+
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          body: fd
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.detail || 'Analysis request failed. Please try again.');
+        }
+
+        renderReport(data);
+      } catch (err) {
+        showError(err.message || 'An error occurred during analysis.');
+      } finally {
+        setBtnLoading(false);
+      }
+    }
+
+    // Render Report with safe access & null checks
+    function renderReport(d) {
+      if (!d) return;
+
+      $('emptyState').style.display = 'none';
+      $('reportContent').style.display = 'flex';
+
+      // 1. Gauge Score
+      const score = typeof d.overall_score === 'number' ? Math.round(d.overall_score) : null;
+      const gaugeValEl = $('gaugeVal');
+      const gaugeCircle = $('gaugeCircle');
+
+      if (score !== null) {
+        gaugeValEl.textContent = score;
+        // Calculate SVG circle circumference: 2 * PI * 65 = 408.4
+        const circumference = 408.4;
+        const offset = circumference - (Math.min(Math.max(score, 0), 100) / 100) * circumference;
+        gaugeCircle.style.strokeDashoffset = offset;
+
+        if (score >= 75) {
+          gaugeCircle.style.stroke = 'var(--score-high)';
+          gaugeValEl.style.color = 'var(--score-high)';
+        } else if (score >= 50) {
+          gaugeCircle.style.stroke = 'var(--score-mid)';
+          gaugeValEl.style.color = 'var(--score-mid)';
+        } else {
+          gaugeCircle.style.stroke = 'var(--score-low)';
+          gaugeValEl.style.color = 'var(--score-low)';
+        }
+      } else {
+        gaugeValEl.textContent = '–';
+        gaugeCircle.style.strokeDashoffset = 408.4;
+      }
+
+      // 2. Summary Headline
+      const summary = d.summary || {};
+      $('summaryHeadline').textContent = summary.headline || 'Interview Performance Summary';
+
+      // 3. Delivery Metrics
+      const metrics = d.metrics || {};
+      const metricsGrid = $('metricsGrid');
+      metricsGrid.replaceChildren();
+
+      const metricItems = [
+        { title: 'Filler Words', val: metrics.filler_total ?? '–', sub: metrics.filler_per_100_words != null ? `${metrics.filler_per_100_words} per 100 words` : '', fillers: metrics.fillers },
+        { title: 'Speaking Pace', val: metrics.pace_wpm != null ? `${metrics.pace_wpm} WPM` : '–', sub: metrics.pace_wpm ? (metrics.pace_wpm > 165 ? 'Fast pace' : metrics.pace_wpm < 120 ? 'Slow pace' : 'Optimal pace') : '' },
+        { title: 'Duration', val: metrics.duration_min != null ? `${metrics.duration_min} min` : '–', sub: 'Total recording length' },
+        { title: 'Answer Words', val: metrics.answer_words ?? '–', sub: 'Candidate spoken words' }
+      ];
+
+      metricItems.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'metric-card';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'metric-title';
+        titleEl.textContent = m.title;
+
+        const valEl = document.createElement('div');
+        valEl.className = 'metric-value';
+        valEl.textContent = m.val;
+
+        const subEl = document.createElement('div');
+        subEl.className = 'metric-subtitle';
+        subEl.textContent = m.sub;
+
+        card.append(titleEl, valEl, subEl);
+
+        if (m.fillers && Object.keys(m.fillers).length > 0) {
+          const pillsContainer = document.createElement('div');
+          pillsContainer.className = 'filler-pills';
+          Object.entries(m.fillers).forEach(([word, count]) => {
+            const pill = document.createElement('span');
+            pill.className = 'filler-pill';
+            pill.textContent = `"${word}": ${count}`;
+            pillsContainer.append(pill);
+          });
+          card.append(pillsContainer);
+        }
+
+        metricsGrid.append(card);
+      });
+
+      // 4. Strengths, Fixes, Practice Plan lists
+      populateList('listStrengths', safeArr(summary.top_strengths));
+      populateList('listFixes', safeArr(summary.top_fixes));
+      populateList('listPractice', safeArr(summary.practice_plan));
+
+      // 5. Answer by Answer Cards
+      const answersContainer = $('answersContainer');
+      answersContainer.replaceChildren();
+
+      const answers = Array.isArray(d.answers) ? d.answers : [];
+      answers.forEach((ans, idx) => {
+        const card = document.createElement('article');
+        const s = ans && typeof ans.score === 'number' ? ans.score : 0;
+        const scoreClass = s >= 8 ? 'score-high' : (s >= 5 ? 'score-mid' : 'score-low');
+        card.className = `answer-card ${scoreClass}`;
+
+        // Header
+        const cardHeader = document.createElement('div');
+        cardHeader.className = 'answer-card-header';
+
+        const qBox = document.createElement('div');
+        const qTitle = document.createElement('h3');
+        qTitle.className = 'question-title';
+        qTitle.textContent = `${idx + 1}. ${ans.question || 'Interview Question'}`;
+
+        if (ans.type) {
+          const typeBadge = document.createElement('span');
+          typeBadge.className = 'answer-type-badge';
+          typeBadge.textContent = ans.type;
+          qBox.append(qTitle, typeBadge);
+        } else {
+          qBox.append(qTitle);
+        }
+
+        const scoreBadge = document.createElement('div');
+        const badgeClass = s >= 8 ? 'high' : (s >= 5 ? 'mid' : 'low');
+        scoreBadge.className = `score-badge ${badgeClass}`;
+        scoreBadge.textContent = `${s} / 10`;
+
+        cardHeader.append(qBox, scoreBadge);
+        card.append(cardHeader);
+
+        // Candidate Answer text
+        if (ans.answer) {
+          const candBox = document.createElement('div');
+          candBox.className = 'candidate-answer-box';
+          candBox.textContent = `"${ans.answer}"`;
+          card.append(candBox);
+        }
+
+        // STAR Chips
+        if (ans.star && typeof ans.star === 'object') {
+          const starRow = document.createElement('div');
+          starRow.className = 'star-container';
+
+          const starLabel = document.createElement('span');
+          starLabel.className = 'star-label';
+          starLabel.textContent = 'STAR Method:';
+          starRow.append(starLabel);
+
+          const starKeys = [
+            { key: 'situation', label: 'S - Situation' },
+            { key: 'task', label: 'T - Task' },
+            { key: 'action', label: 'A - Action' },
+            { key: 'result', label: 'R - Result' }
+          ];
+
+          starKeys.forEach(item => {
+            const isPresent = Boolean(ans.star[item.key]);
+            const chip = document.createElement('span');
+            chip.className = `star-chip ${isPresent ? 'active' : ''}`;
+            chip.textContent = `${isPresent ? '✓ ' : ''}${item.label}`;
+            starRow.append(chip);
+          });
+
+          card.append(starRow);
+        }
+
+        // Strengths & Weaknesses
+        const strengths = safeArr(ans.strengths);
+        const weaknesses = safeArr(ans.weaknesses);
+
+        if (strengths.length > 0 || weaknesses.length > 0) {
+          const swGrid = document.createElement('div');
+          swGrid.style.display = 'grid';
+          swGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
+          swGrid.style.gap = '16px';
+          swGrid.style.margin = '14px 0';
+
+          if (strengths.length > 0) {
+            const strCol = document.createElement('div');
+            const h = document.createElement('div');
+            h.style.fontWeight = '600';
+            h.style.fontSize = '0.85rem';
+            h.style.color = 'var(--score-high)';
+            h.style.marginBottom = '6px';
+            h.textContent = 'Strengths:';
+            const u = document.createElement('ul');
+            u.className = 'bullet-list strengths';
+            strengths.forEach(st => {
+              const li = document.createElement('li');
+              li.textContent = st;
+              u.append(li);
+            });
+            strCol.append(h, u);
+            swGrid.append(strCol);
+          }
+
+          if (weaknesses.length > 0) {
+            const wkCol = document.createElement('div');
+            const h = document.createElement('div');
+            h.style.fontWeight = '600';
+            h.style.fontSize = '0.85rem';
+            h.style.color = 'var(--score-mid)';
+            h.style.marginBottom = '6px';
+            h.textContent = 'Weaknesses:';
+            const u = document.createElement('ul');
+            u.className = 'bullet-list fixes';
+            weaknesses.forEach(wk => {
+              const li = document.createElement('li');
+              li.textContent = wk;
+              u.append(li);
+            });
+            wkCol.append(h, u);
+            swGrid.append(wkCol);
+          }
+
+          card.append(swGrid);
+        }
+
+        // Improved Answer Accordion
+        if (ans.improved_answer) {
+          const dt = document.createElement('details');
+          dt.className = 'improved-answer-details';
+
+          const sum = document.createElement('summary');
+          sum.className = 'improved-answer-summary';
+          sum.innerHTML = '<span>✨ Stronger Version (AI Coaching Rewrite)</span> <span>▼</span>';
+
+          const content = document.createElement('div');
+          content.className = 'improved-answer-content';
+          content.textContent = ans.improved_answer;
+
+          dt.append(sum, content);
+          card.append(dt);
+        }
+
+        answersContainer.append(card);
+      });
+    }
+
+    function populateList(elementId, items) {
+      const ul = $(elementId);
+      ul.replaceChildren();
+      if (items.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'None specified.';
+        ul.append(li);
+        return;
+      }
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.append(li);
+      });
+    }
+  </script>
+</body>
+
+</html>
