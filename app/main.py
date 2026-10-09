@@ -17,14 +17,23 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 log = logging.getLogger("analyzer")
 
 MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
-MAX_BYTES = int(os.getenv("MAX_UPLOAD_MB", "50")) * 1024 * 1024
+MAX_BYTES = int(os.getenv("MAX_UPLOAD_MB", "20")) * 1024 * 1024
 RATE_LIMIT = int(os.getenv("RATE_LIMIT_PER_HOUR", "10"))
 MAX_CHARS = 60_000
 ALLOWED_EXT = {".mp3", ".wav", ".m4a", ".mp4", ".webm", ".ogg", ".flac", ".mov"}
+MIME_TYPES = {
+    ".mp3": "audio/mp3",
+    ".wav": "audio/wav",
+    ".m4a": "audio/m4a",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".ogg": "audio/ogg",
+    ".flac": "audio/flac",
+    ".mov": "video/quicktime",
+}
 
 app = FastAPI(title="Interview Analyzer")
 _client = None
-_whisper = None
 _hits = defaultdict(deque)
 # Free tier has low rate limits, so only a few Gemini calls run at once.
 _sem = asyncio.Semaphore(3)
@@ -60,14 +69,31 @@ SAFETY = (
     "Reply with a single valid JSON value and nothing else."
 )
 
+
 # ---------- tools ----------
-def transcribe(path: str):
-    global _whisper
-    from faster_whisper import WhisperModel
-    if _whisper is None:
-        _whisper = WhisperModel(os.getenv("WHISPER_MODEL", "small"), device="cpu", compute_type="int8")
-    segs, info = _whisper.transcribe(path, vad_filter=True)
-    return " ".join(s.text.strip() for s in segs), info.duration
+def get_audio_duration(path: str) -> Optional[float]:
+    try:
+        import mutagen
+        info = mutagen.file(path)
+        if info and hasattr(info, "info") and hasattr(info.info, "length"):
+            return float(info.info.length)
+    except Exception:
+        pass
+    return None
+
+
+async def transcribe_with_gemini(data: bytes, mime_type: str) -> str:
+    async with _sem:
+        part = types.Part.from_bytes(data=data, mime_type=mime_type)
+        prompt = (
+            "Transcribe this audio/video verbatim. Return ONLY the spoken words "
+            "with no commentary, notes, or extra formatting."
+        )
+        r = await client().aio.models.generate_content(
+            model=MODEL,
+            contents=[part, prompt],
+        )
+        return (r.text or "").strip()
 
 
 FILLERS = r"\b(um+|uh+|er|ah|you know|i mean|basically|actually|literally|kind of|sort of)\b"
@@ -181,21 +207,25 @@ async def analyze(
         ext = Path(audio.filename).suffix.lower()
         if ext not in ALLOWED_EXT:
             raise HTTPException(400, f"Unsupported file type {ext}.")
+        mime_type = MIME_TYPES.get(ext, "audio/mp3")
         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
         try:
-            size = 0
+            raw_bytes = bytearray()
             while chunk := await audio.read(1024 * 1024):
-                size += len(chunk)
-                if size > MAX_BYTES:
+                raw_bytes.extend(chunk)
+                if len(raw_bytes) > MAX_BYTES:
                     raise HTTPException(413, f"File too large (max {MAX_BYTES // 1048576} MB).")
                 tmp.write(chunk)
             tmp.close()
+
+            duration = get_audio_duration(tmp.name)
             t = time.time()
-            transcript, duration = await asyncio.to_thread(transcribe, tmp.name)
-            log.info("step=transcribe ms=%d audio_sec=%d", (time.time() - t) * 1000, duration)
+            transcript = await transcribe_with_gemini(bytes(raw_bytes), mime_type)
+            log.info("step=transcribe_gemini ms=%d audio_sec=%s", (time.time() - t) * 1000, duration)
         finally:
             tmp.close()
-            os.unlink(tmp.name)  # recordings are never kept
+            if os.path.exists(tmp.name):
+                os.unlink(tmp.name)  # recordings are never kept
 
     transcript = transcript.strip()
     if len(transcript.split()) < 30:
